@@ -1,2 +1,1 @@
-# BakerSynthesizerLinux
-Baker Synthesizer for Linux
+请考doc目录下的文档
