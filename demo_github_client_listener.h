@@ -25,7 +25,7 @@ public:
         tm tm = *localtime((const time_t*)&sec);
         ostringstream file_name;
         file_name << (1900 + tm.tm_year) << "-"
-                  << tm.tm_mon           << "-"
+                  << (1 + tm.tm_mon)     << "-"
                   << tm.tm_mday          << "_"
                   << tm.tm_hour          << "-"
                   << tm.tm_min           << "-"

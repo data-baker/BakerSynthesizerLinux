@@ -52,8 +52,8 @@ class WSFrameManager;
 class SynthesizerManager
 {
 public:
-    SynthesizerManager(): _get_token_thread(NULL), _inited(false) {};
-    virtual ~SynthesizerManager() {};
+    SynthesizerManager(): _inited(false) {};
+    virtual ~SynthesizerManager() { _client_listener.reset(); };
 
     /********************************************************************************************
 	**	@func 初始化，只需一次
@@ -63,7 +63,7 @@ public:
 	**
 	**	@return 成功返回0，失败返回-1
 	********************************************************************************************/
-    int init(std::string client_id, std::string secret);
+    int init(std::string client_id, std::string secret, std::string server_url);
 
     /********************************************************************************************
 	**	@func 设置回调指针
@@ -88,7 +88,7 @@ public:
 	**
 	**	@param 无
 	**
-	**	@return 成功返回0，失败返回-1 
+	**	@return 成功返回0，失败返回-1
 	********************************************************************************************/
     int stopTask();
 
@@ -102,8 +102,6 @@ public:
     void uninit();
 
     void setReprocessRequest(boost::shared_ptr<WSFrame> reprocess_request);
-private:
-    void getToken();
 
 public:
     boost::shared_ptr<WSFrameManager>  _ws_frame_manager;
@@ -111,13 +109,11 @@ public:
     boost::mutex                       _api_mutex;
     std::string                        _client_id;
     std::string                        _secret;
-    boost::thread*                     _get_token_thread;
+    std::string                        _server_url;
 
 private:
-    std::string                        _token;
     volatile bool                      _inited;
     boost::shared_ptr<WSFrame>         _reprocess_request;
-    volatile bool                      _need_reprocess_request;
 };
 
 }

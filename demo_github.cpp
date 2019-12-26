@@ -6,6 +6,8 @@
 using namespace std;
 using namespace tts_stream_sdk;
 
+string server_url = "wss://openapi.data-baker.com/wss";
+
 string client_id = "";  //向标贝科技申请的client_id
 string secret    = "";  //向标贝科技申请的secret
 
@@ -15,7 +17,7 @@ int main(int argc, char* argv[])
     {
         boost::shared_ptr<ClientListener> client_listener(new(std::nothrow) MyClientListener());
         SynthesizerManager synthesizer_manager;
-        synthesizer_manager.init(client_id, secret);  //client_id或secret不可为空
+        synthesizer_manager.init(client_id, secret, server_url);  //client_id, secret和server_url均不可为空
         synthesizer_manager.setListener(client_listener);
 
         SynthesizerParams synthesizer_param;
