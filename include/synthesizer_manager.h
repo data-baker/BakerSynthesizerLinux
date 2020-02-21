@@ -75,7 +75,7 @@ public:
     int setListener(boost::shared_ptr<ClientListener> client_listener);
 
     /********************************************************************************************
-	**	@func 开始一个合成任务，如果前一个任务正在进行中，sdk内部会停止前一个任务，开始当前任务
+	**	@func 开始一个合成任务，函数会一直阻塞到任务成功或失败
 	**
 	**	@param tts_params 合成参数
 	**
