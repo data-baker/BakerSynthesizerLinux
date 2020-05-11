@@ -52,14 +52,15 @@ class WSFrameManager;
 class SynthesizerManager
 {
 public:
-    SynthesizerManager(): _inited(false) {};
-    virtual ~SynthesizerManager() { _client_listener.reset(); };
+    SynthesizerManager(): _get_token_thread(NULL), _inited(false) {};
+    virtual ~SynthesizerManager() {};
 
     /********************************************************************************************
 	**	@func 初始化，只需一次
 	**
-	**	@param client_id 从标贝申请的client_id
-	**	@param secret    从标贝申请的secret
+	**	@param client_id  从标贝申请的client_id
+	**	@param secret     从标贝申请的secret
+	**	@param server_url 标贝合成公有云的WebSocket地址
 	**
 	**	@return 成功返回0，失败返回-1
 	********************************************************************************************/
@@ -75,7 +76,7 @@ public:
     int setListener(boost::shared_ptr<ClientListener> client_listener);
 
     /********************************************************************************************
-	**	@func 开始一个合成任务，函数会一直阻塞到任务成功或失败
+	**	@func 开始一个合成任务，如果前一个任务正在进行中，sdk内部会停止前一个任务，开始当前任务
 	**
 	**	@param tts_params 合成参数
 	**
@@ -102,6 +103,8 @@ public:
     void uninit();
 
     void setReprocessRequest(boost::shared_ptr<WSFrame> reprocess_request);
+private:
+    void getToken();
 
 public:
     boost::shared_ptr<WSFrameManager>  _ws_frame_manager;
@@ -110,10 +113,13 @@ public:
     std::string                        _client_id;
     std::string                        _secret;
     std::string                        _server_url;
+    boost::thread*                     _get_token_thread;
 
 private:
+    std::string                        _token;
     volatile bool                      _inited;
     boost::shared_ptr<WSFrame>         _reprocess_request;
+    volatile bool                      _need_reprocess_request;
 };
 
 }

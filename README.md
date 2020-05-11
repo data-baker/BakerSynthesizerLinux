@@ -10,14 +10,15 @@
 
 类成员方法：
 
-| 方法                | 参数说明                      | 说明                   |
-| ------------------- | ----------------------------- | ---------------------- |
-| int  init(…)        | string  client_id             | 从标贝获取的client id  |
-|                     | string secret                 | 从标贝获取的secret     |
-| int  setListener(…) | ClientListener*  listener     | 设置回调类             |
-| int  startTask(…)   | SynthesizerParams&  tts_param | 设置合成参数，进行合成 |
-| int  stopTask()     | 无参数                        | 停止当前合成任务       |
-| void  uninit()      | 无参数                        | 反初始化               |
+| 方法                | 参数说明                      | 说明                    |
+| ------------------- | ----------------------------- | ----------------------- |
+| int  init(…)        | string  client_id             | 从标贝获取的client id   |
+|                     | string secret                 | 从标贝获取的secret      |
+|                     | string server_url             | 合成服务的WebSocket地址 |
+| int  setListener(…) | ClientListener*  listener     | 设置回调类              |
+| int  startTask(…)   | SynthesizerParams&  tts_param | 设置合成参数，进行合成  |
+| int  stopTask()     | 无参数                        | 停止当前合成任务        |
+| void  uninit()      | 无参数                        | 反初始化                |
 
  
 
@@ -76,7 +77,7 @@
 
 5 回调返回音频数据或错误信息
 
-6 反初始化
+6 反初始化（注意：该版本为非阻塞版本，请确保业务已完全处理完毕，否则任务会被终止）
 
 如果需要开始新的合成请求，重复1-6步骤即可；
 
@@ -98,7 +99,7 @@
 
  … //触发回调
 
- SynthesizerManager::getInstance()->uninit();
+ SynthesizerManager::getInstance()->uninit();（注意：该版本为非阻塞版本，请确保业务已完全处理完毕，否则任务会被终止）
 
  
 

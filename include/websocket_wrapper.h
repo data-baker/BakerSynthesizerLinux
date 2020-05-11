@@ -1,5 +1,6 @@
 #ifndef __WEBSOCKET_WRAPPER_H__
 #define __WEBSOCKET_WRAPPER_H__
+//#include <websocketpp/config/asio_no_tls_client.hpp>
 #include <websocketpp/config/asio_client.hpp>
 #include <websocketpp/client.hpp>
 #include "pub_headers.h"
@@ -50,6 +51,7 @@ public:
     virtual ~WSFrame() {};
 
 public:
+//    std::string      _token;
     std::string      _version;
     std::string      _text;
     std::string      _domain;
@@ -68,17 +70,18 @@ public:
 class WSFrameManager
 {
 public:
-    WSFrameManager(SynthesizerManager* synthesizer_manager, boost::shared_ptr<ClientListener> client_listener, std::string client_id, std::string secret, std::string server_url);
+    WSFrameManager(std::string server_url, SynthesizerManager* synthesizer_manager, boost::shared_ptr<ClientListener> client_listener);
     virtual ~WSFrameManager();
     std::string genJsonRequest(boost::shared_ptr<WSFrame> ws_request_frame);
     void sendRequestFrame(websocketpp::connection_hdl hdl, boost::shared_ptr<WSFrame> ws_request_frame);
-    void procWSRequestFrame(boost::shared_ptr<WSFrame> ws_frame);
-//    void procWSRequestFrameAgain(boost::shared_ptr<WSFrame> ws_frame);
+    void addWSRequestFrame(boost::shared_ptr<WSFrame> ws_frame);
+    void clearWSRequestFrame();
+    void addWSRequestFrameAgain(boost::shared_ptr<WSFrame> ws_frame);
     void recvAudioFrame(const std::string& payload);
     bool openConnection(std::string& uri);
     void closeConnection();
     void stopIOService();
-//    void makeConnectionThread();
+    void makeConnectionThread();
     void taskMonitorThread();
     void setToken(std::string& token)
     {
@@ -107,17 +110,20 @@ public:
     void on_close(websocketpp::connection_hdl hdl);
     void on_fail(websocketpp::connection_hdl hdl);
     void on_message(websocketpp::connection_hdl hdl, message_ptr msg);
-private:
-    void getToken();
 
 public:
-    std::string                        _client_id;
-    std::string                        _secret;
-    std::string                        _server_url;
+    std::string                         _server_url;
     boost::shared_ptr<ClientListener>   _client_listener;
+    SynthesizerManager*                 _synthesizer_manager;
     client                              _ws_client;
     websocketpp::connection_hdl         _hdl;
     boost::mutex                        _hdl_mutex;
+    volatile bool                       _keep_thread_running;
+    boost::thread*                      _connection_thread;
+
+    std::list<boost::shared_ptr<WSFrame>>   _ws_request_frame_list;
+    boost::mutex                        _request_list_mutex;
+    boost::condition_variable           _request_list_cond;
 
     boost::shared_ptr<WSFrame>          _ws_request_frame;
     boost::mutex                        _request_frame_mutex;
@@ -131,9 +137,6 @@ public:
     volatile uint64_t                   _task_start_time_s;
     boost::mutex                        _update_time_mutex;
     boost::thread*                      _task_monitor_thread;
-    volatile bool                       _keep_monitor_thread_running;
-//    volatile bool                      _need_reprocess_request;
-    volatile bool                      _stop_geting_token;
 };
 
 }

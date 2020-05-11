@@ -7,10 +7,12 @@ using namespace std;
 using namespace tts_stream_sdk;
 
 string server_url = "wss://openapi.data-baker.com/wss";
+//string server_url = "ws://192.168.1.21:9003";
 
-string client_id = "";  //向标贝科技申请的client_id
-string secret    = "";  //向标贝科技申请的secret
+string client_id = "e2d17fce-f69a-4b78-bbe5-7fef824a77c2";  //向标贝科技申请的client_id
+string secret    = "ZTZlOTMyMzAtMThlZS00M2ZjLWJhMTktYTQ2NjBhZTE3Yzk0";  //向标贝科技申请的secret
 
+//这是一个非阻塞版本的测试程序
 int main(int argc, char* argv[])
 {
     //while(true)  //每次合成请求都需要走一遍以下的流程，类似libcurl的使用。
@@ -21,9 +23,9 @@ int main(int argc, char* argv[])
         synthesizer_manager.setListener(client_listener);
 
         SynthesizerParams synthesizer_param;
-        synthesizer_param._text            = "欢迎使用标贝科技只能语音合成服务";  //text长度限制为250个汉字，且必须为utf-8编码格式
+        synthesizer_param._text            = "欢迎使用标贝科技只能语音合成服务";                  //text长度限制为250个汉字，且必须为utf-8编码格式
     //    synthesizer_param._speed           = 5.0f;                              //设置播放语速，0 ~ 9（支持浮点数），默认为5
-        synthesizer_param._voice_name      = "标准合成_标准女声_瑶瑶";            //发音人
+        synthesizer_param._voice_name      = "标准合成_标准女声_瑶瑶";                      //发音人，请确保指定的clientid支持该voice_name
     //    synthesizer_param._pitch           = 5.0f;                              //设置音调，0 ~ 9（支持浮点数），默认为5
     //    synthesizer_param._audio_type      = 4;                                 //设置合成音频格式，4: 16k_pcm, 5:8k_pcm, 6&rate=0: 16k_wav, 6&rate=1: 8k_wav 默认为4
     //    synthesizer_param._rate            = 0;                                 //配合audio_type使用
@@ -33,7 +35,7 @@ int main(int argc, char* argv[])
 
         client_listener->onLog("Notice: add new task.");
         synthesizer_manager.startTask(synthesizer_param);
-
+        getchar();  //阻塞一下，不然程序就退出了
         synthesizer_manager.uninit();
     }
 }
