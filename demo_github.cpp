@@ -9,8 +9,8 @@ using namespace tts_stream_sdk;
 string server_url = "wss://openapi.data-baker.com/wss";
 //string server_url = "ws://192.168.1.21:9003";
 
-string client_id = "e2d17fce-f69a-4b78-bbe5-7fef824a77c2";  //向标贝科技申请的client_id
-string secret    = "ZTZlOTMyMzAtMThlZS00M2ZjLWJhMTktYTQ2NjBhZTE3Yzk0";  //向标贝科技申请的secret
+string client_id = "";  //向标贝科技申请的client_id
+string secret    = "";  //向标贝科技申请的secret
 
 //这是一个非阻塞版本的测试程序
 int main(int argc, char* argv[])
