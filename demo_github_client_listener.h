@@ -39,7 +39,7 @@ public:
         }
 #endif
     }
-    void onBinaryReceived(uint32_t idx, std::string audio_data, std::string audio_type, std::string interval)
+    void onBinaryReceived(uint32_t idx, std::string& audio_data, std::string& audio_type, std::string& interval)
     {
         std::ostringstream oss;
         oss << "Notice: onBinaryReceived called. audio frame info. "
@@ -67,7 +67,7 @@ public:
         }
 #endif
     }
-    void onTaskFailed(uint32_t error_code, std::string info, std::string trace_id)
+    void onTaskFailed(uint32_t error_code, std::string& info, std::string& trace_id)
     {
         std::ostringstream oss;
         oss << "Notice: onTaskFailed called. task failed. "

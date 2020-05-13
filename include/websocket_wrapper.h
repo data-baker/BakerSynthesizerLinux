@@ -112,6 +112,7 @@ public:
     void on_message(websocketpp::connection_hdl hdl, message_ptr msg);
 
 public:
+    std::string                         _traceid;
     std::string                         _server_url;
     boost::shared_ptr<ClientListener>   _client_listener;
     SynthesizerManager*                 _synthesizer_manager;
