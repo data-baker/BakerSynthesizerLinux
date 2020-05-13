@@ -1,6 +1,14 @@
 # 标贝科技语音合成服务Linux SDK使用文档（2.0）
 
-## 链接lib（参考demo_github） 
+## 分支介绍
+
+| 分支名                        | 描述                                        |
+| ----------------------------- | ------------------------------------------- |
+| master                        | 请求公有云服务，任务阻塞，   适配centos系统 |
+| forward_cloud_nonblock        | 请求公有云服务，任务非阻塞，适配centos系统  |
+| forward_cloud_nonbolck_ubuntu | 请求公有云服务，任务非阻塞，适配ubuntu系统  |
+
+请根据需要下载后切换分支。链接lib（参考demo_github） 
 
 ## 关键类及方法
 
