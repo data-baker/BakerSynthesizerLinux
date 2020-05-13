@@ -6,15 +6,14 @@ using namespace std;
 
 #define SAVE_AUDIO 1
 
+#if SAVE_AUDIO
+static FILE* fp = NULL;
+#endif
+
 class MyClientListener: public tts_stream_sdk::ClientListener
 {
 public:
-    MyClientListener()
-    {
-#if SAVE_AUDIO
-        _fp = NULL;
-#endif
-    };
+    MyClientListener() {};
     virtual ~MyClientListener() {};
     void onTaskStarted()
     {
@@ -24,7 +23,7 @@ public:
         gettimeofday(&tv, NULL);
         time_t sec = tv.tv_sec;
         tm tm = *localtime((const time_t*)&sec);
-        ostringstream file_name("./audio/");
+        ostringstream file_name;
         file_name << (1900 + tm.tm_year) << "-"
                   << (1 + tm.tm_mon)     << "-"
                   << tm.tm_mday          << "_"
@@ -33,8 +32,8 @@ public:
                   << tm.tm_sec           << "."
                   << tv.tv_usec          << ".pcm";
         
-        _fp = fopen(file_name.str().c_str(), "wb+");
-        if(!_fp)
+        fp = fopen(file_name.str().c_str(), "wb+");
+        if(!fp)
         {
             onLog("Error: open file aaa.pcm failed.");
         }
@@ -51,9 +50,9 @@ public:
             << "]";
         onLog(oss.str());
 #if SAVE_AUDIO
-        if(_fp)
+        if(fp)
         {
-            fwrite(audio_data.c_str(), 1, audio_data.length(), _fp);
+            fwrite(audio_data.c_str(), 1, audio_data.length(), fp);
         }
 #endif
     }
@@ -61,10 +60,10 @@ public:
     {
         onLog("Notice: onTaskCompleted called. task completed.");
 #if SAVE_AUDIO
-        if(_fp)
+        if(fp)
         {
-            fclose(_fp);
-            _fp = NULL;
+            fclose(fp);
+            fp = NULL;
         }
 #endif
     }
@@ -78,10 +77,10 @@ public:
             << "]";
         onLog(oss.str());
 #if SAVE_AUDIO
-        if(_fp)
+        if(fp)
         {
-            fclose(_fp);
-            _fp = NULL;
+            fclose(fp);
+            fp = NULL;
         }
 #endif
     }
@@ -92,11 +91,6 @@ public:
         oss << log;
         fprintf(stderr, "%s\n", oss.str().c_str());
     }
-#if SAVE_AUDIO
-private:
-    FILE*           _fp;
-#endif
-
 };
 
 
