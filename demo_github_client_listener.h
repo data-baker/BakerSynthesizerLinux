@@ -17,7 +17,7 @@ public:
     virtual ~MyClientListener() {};
     void onTaskStarted()
     {
-        onLog("Notice: onTaskStarted called. start task.");
+        onLog(tts_stream_sdk::LogLevel_notice, "Notice: onTaskStarted called. start task.");
 #if SAVE_AUDIO
         struct timeval tv;
         gettimeofday(&tv, NULL);
@@ -35,11 +35,11 @@ public:
         fp = fopen(file_name.str().c_str(), "wb+");
         if(!fp)
         {
-            onLog("Error: open file aaa.pcm failed.");
+            onLog(tts_stream_sdk::LogLevel_error, "Error: open file aaa.pcm failed.");
         }
 #endif
     }
-    void onBinaryReceived(uint32_t idx, std::string audio_data, std::string audio_type, std::string interval)
+    void onBinaryReceived(uint32_t idx, std::string& audio_data, std::string& audio_type, std::string& interval)
     {
         std::ostringstream oss;
         oss << "Notice: onBinaryReceived called. audio frame info. "
@@ -48,17 +48,20 @@ public:
             << "], audio_type["     << audio_type
             << "], interval["       << interval
             << "]";
-        onLog(oss.str());
+        onLog(tts_stream_sdk::LogLevel_notice, oss.str());
 #if SAVE_AUDIO
         if(fp)
         {
-            fwrite(audio_data.c_str(), 1, audio_data.length(), fp);
+            int write_size = fwrite(audio_data.c_str(), 1, audio_data.length(), fp);
+            std::stringstream oss_ws;
+            oss_ws << "Notice: write size:[" << write_size << "]";
+            onLog(tts_stream_sdk::LogLevel_notice, oss_ws.str());
         }
 #endif
     }
     void onTaskCompleted()
     {
-        onLog("Notice: onTaskCompleted called. task completed.");
+        onLog(tts_stream_sdk::LogLevel_notice, "Notice: onTaskCompleted called. task completed.");
 #if SAVE_AUDIO
         if(fp)
         {
@@ -67,7 +70,7 @@ public:
         }
 #endif
     }
-    void onTaskFailed(uint32_t error_code, std::string info, std::string trace_id)
+    void onTaskFailed(uint32_t error_code, std::string& info, std::string& trace_id)
     {
         std::ostringstream oss;
         oss << "Notice: onTaskFailed called. task failed. "
@@ -75,7 +78,7 @@ public:
             << "], info["     << info
             << "], trace_id[" << trace_id
             << "]";
-        onLog(oss.str());
+        onLog(tts_stream_sdk::LogLevel_notice, oss.str());
 #if SAVE_AUDIO
         if(fp)
         {
@@ -84,7 +87,7 @@ public:
         }
 #endif
     }
-    void onLog(std::string log)
+    void onLog(tts_stream_sdk::LogLevel log_level, std::string log)
     {
         ostringstream oss;
         oss << __FILE__ << ":" << __LINE__ << "]";

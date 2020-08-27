@@ -6,12 +6,17 @@
 #include "client_listener.h"
 #include "synthesizer_manager.h"
 
+#define WSS_URL 1
+
 namespace tts_stream_sdk {
+#if WSS_URL
 typedef websocketpp::client<websocketpp::config::asio_tls_client> client;
-//typedef client::message_ptr message_ptr;
 typedef websocketpp::config::asio_tls_client::message_type::ptr message_ptr;
 typedef websocketpp::lib::shared_ptr<websocketpp::lib::asio::ssl::context> context_ptr;
-//typedef websocketpp::lib::shared_ptr<boost::asio::ssl::context> context_ptr;
+#else
+typedef websocketpp::client<websocketpp::config::asio_client> client;
+typedef websocketpp::config::asio_client::message_type::ptr message_ptr;
+#endif
 typedef client::connection_ptr connection_ptr;
 
 using websocketpp::lib::placeholders::_1;
@@ -101,8 +106,9 @@ public:
         _token.clear();
     };
     void taskFailed(uint32_t error_code);
-
+#if WSS_URL
     context_ptr on_tls_init(websocketpp::connection_hdl);
+#endif
     void on_open(websocketpp::connection_hdl hdl);
     void on_close(websocketpp::connection_hdl hdl);
     void on_fail(websocketpp::connection_hdl hdl);
