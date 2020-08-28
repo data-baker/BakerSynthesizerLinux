@@ -47,6 +47,8 @@ public:
     {
         fprintf(stderr, "%s\n", log.c_str());
     }
+public:
+    void*               _other_param;
 };
 }
 
